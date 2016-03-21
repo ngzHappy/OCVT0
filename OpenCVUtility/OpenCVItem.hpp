@@ -14,7 +14,7 @@ public:
 
     explicit OpenCVItem(QGraphicsItem *parent=nullptr);
     ~OpenCVItem();
-    virtual void renderTo( QImage &) = 0;
+    virtual void renderTo(QImage &)=0;
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void paint(QPainter *painter,const QStyleOptionGraphicsItem *option,QWidget *widget) override;

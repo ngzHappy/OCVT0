@@ -32,19 +32,19 @@ OpenCVImageItem::OpenCVImageItem(QGraphicsItem *parent)
 }
 
 void OpenCVImageItem::paint(
-        QPainter * ,
+        QPainter *,
         const QStyleOptionGraphicsItem *,
         QWidget *) {
 
 }
 
-void OpenCVImageItem::setAlgFunction(AlgFunctionType alg__){
-    alg_ = std::move(alg__);
+void OpenCVImageItem::setAlgFunction(AlgFunctionType alg__) {
+    alg_=std::move(alg__);
 
-    if(alg_){
-        auto & fun_ = *alg_;
-        if(fun_){
-            image_ = fun_( image_input_ );
+    if (alg_) {
+        auto & fun_=*alg_;
+        if (fun_) {
+            image_=fun_(image_input_);
             _tryResize();
             imageChanged();
             update();
@@ -53,7 +53,7 @@ void OpenCVImageItem::setAlgFunction(AlgFunctionType alg__){
     }
 
     {
-        image_= image_input_;
+        image_=image_input_;
         _tryResize();
         imageChanged();
         update();
@@ -77,7 +77,7 @@ void OpenCVImageItem::saveImage() {
 
     {
         const QString saveFileName_=QFileDialog::getSaveFileName();
-        if(saveFileName_.isEmpty()){return;}
+        if (saveFileName_.isEmpty()) { return; }
         image_.save(saveFileName_);
     }
 
@@ -87,11 +87,11 @@ void OpenCVImageItem::tryResizeImage() {
     {
         const auto size_=this->size();
         const auto width_=(std::max<qreal>)(
-        {128.0,static_cast<qreal>(image_.width()),size_.width() });
+        { 128.0,static_cast<qreal>(image_.width()),size_.width() });
         const auto height_=(std::max<qreal>)(
-        {128.0,static_cast<qreal>(image_.height()),size_.height()});
-        this->setMinimumWidth( std::max(128,image_.width()) );
-        this->setMinimumHeight( std::max(128,image_.height()) );
+        { 128.0,static_cast<qreal>(image_.height()),size_.height() });
+        this->setMinimumWidth(std::max(128,image_.width()));
+        this->setMinimumHeight(std::max(128,image_.height()));
         this->resize(width_,height_);
         if (item_) {
             item_->resize(image_.width(),image_.height());
@@ -101,7 +101,7 @@ void OpenCVImageItem::tryResizeImage() {
     }
 }
 
-void OpenCVImageItem::_tryResize(){
+void OpenCVImageItem::_tryResize() {
     tryResizeImage();
 }
 
@@ -109,9 +109,9 @@ void OpenCVImageItem::setImage(QImage i) {
     image_=std::move(i);
     image_input_=image_;
 
-    if( alg_ ){
-        auto & fun_ = *alg_;
-        if(fun_){ image_ = fun_( image_input_ ); }
+    if (alg_) {
+        auto & fun_=*alg_;
+        if (fun_) { image_=fun_(image_input_); }
     }
 
     _tryResize();

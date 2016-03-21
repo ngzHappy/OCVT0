@@ -8,7 +8,7 @@
 
 class OPENCVUTILITYSHARED_EXPORT OpenCVImageItem : public OpenCVItem {
     Q_OBJECT
-        Q_PROPERTY(QImage image READ image WRITE setImage NOTIFY imageChanged)
+    Q_PROPERTY(QImage image READ image WRITE setImage NOTIFY imageChanged)
 public:
     typedef std::shared_ptr< const std::function< QImage(const QImage &) > >  AlgFunctionType;
 private:

@@ -5,7 +5,7 @@
 #include <QtWidgets/qgraphicsitem.h>
 #include <QtWidgets/qfiledialog.h>
 
-namespace  {
+namespace {
 namespace __private {
 
 class SpinSlider {
@@ -24,7 +24,7 @@ public:
     }
 };
 
-class WindowTitleBar :public QWidget{
+class WindowTitleBar :public QWidget {
 public:
     SpinSlider xPos_;
     SpinSlider yPos_;
@@ -49,17 +49,17 @@ public:
 };
 
 class RectItem :
-    public QGraphicsWidget{
+    public QGraphicsWidget {
     QBrush brush_;
     QPen pen_;
 public:
-    RectItem(QGraphicsItem * p): QGraphicsWidget(p){
+    RectItem(QGraphicsItem * p): QGraphicsWidget(p) {
         {
             QPalette pal=this->palette();
             pal.setBrush(QPalette::Background,Qt::transparent);
             this->setPalette(pal);
         }
-        this->setFlag( QGraphicsItem::ItemIsMovable );
+        this->setFlag(QGraphicsItem::ItemIsMovable);
     }
 
     void setBrush(const QBrush &v) { brush_=v; update(); }
@@ -69,12 +69,12 @@ public:
         QWidget *)override {
         p->setPen(pen_);
         p->setBrush(brush_);
-        p->drawRect( rect() );
+        p->drawRect(rect());
     }
 
 };
 
-class MainWindow :public QMainWindow{
+class MainWindow :public QMainWindow {
     OpenCVImageItem * imageItem_;
     RectItem * rectItem_;
     WindowTitleBar * titleBar_;
@@ -93,21 +93,21 @@ public:
 
     void save();
     void open();
-    
+
     void resetSize(OpenCVImageItem * i) {
-        auto h_ = this->height()+ i->image().height();
+        auto h_=this->height()+i->image().height();
         auto ih_=i->minimumHeight();
-        i->setMinimumHeight( (h_>ih_)?h_:ih_ );
+        i->setMinimumHeight((h_>ih_)?h_:ih_);
         titleBar_->xPos_.setRange(0,i->image().width());
         titleBar_->yPos_.setRange(0,i->image().height());
         titleBar_->width_.setRange(1,std::max(1,i->image().width()));
         titleBar_->height_.setRange(1,std::max(1,i->image().height()));
     }
 
-    void create(OpenCVImageItem * i){
+    void create(OpenCVImageItem * i) {
         imageItem_=i;
         rectItem_=new RectItem(i->getImageItem());
-        rectItem_->setGeometry({0,0,100.0f,100.0f});
+        rectItem_->setGeometry({ 0,0,100.0f,100.0f });
         rectItem_->setBrush(QColor(200,30,60,130));
         rectItem_->setPen(QPen(QColor(30,50,200,200),2));
 
@@ -131,7 +131,7 @@ public:
                 titleBar_->yPos_.slider->setValue(qRound(g_.y()));
             }
         }
-        catch (...) {/*???*/}
+        catch (...) {/*???*/ }
         isUpdateTitleBar=false;
     }
 
@@ -148,11 +148,11 @@ public:
 
 void create(OpenCVImageItem *  itemWidget) {
 
-    QGraphicsScene * scene_ = itemWidget->scene();
+    QGraphicsScene * scene_=itemWidget->scene();
     if (scene_==0) { return; }
 
     __private::MainWindow * tbar=new __private::MainWindow;
-    auto * dtbar = scene_->addWidget(tbar);
+    auto * dtbar=scene_->addWidget(tbar);
 
     tbar->create(itemWidget);
 
@@ -163,16 +163,15 @@ void create(OpenCVImageItem *  itemWidget) {
 
     itemWidget->getImageItem()->setParentItem(nullptr);
     itemWidget->getImageItem()->setParent(nullptr);
-    layout_->addItem( itemWidget->getImageItem() );
+    layout_->addItem(itemWidget->getImageItem());
 
     layout_->addStretch();
     layout_->setSpacing(0);
     layout_->setContentsMargins(0,0,0,0);
-       
-   
-    QObject::connect( itemWidget,&OpenCVImageItem::imageChanged,
+
+    QObject::connect(itemWidget,&OpenCVImageItem::imageChanged,
         tbar,[itemWidget,tbar]() {tbar->resetSize(itemWidget); }
-        );
+    );
     tbar->resetSize(itemWidget);
 }
 
@@ -195,14 +194,14 @@ void MainWindow::save() {
 
     const QString saveFileName__=QFileDialog::getSaveFileName();
     if (saveFileName__.isEmpty()) { return; }
-    QImage image__= imageItem_->image();
-    QRectF roiRect__ = rectItem_->geometry();
+    QImage image__=imageItem_->image();
+    QRectF roiRect__=rectItem_->geometry();
     QRectF imageRect__(0,0,image__.width(),image__.height());
-    roiRect__ &=imageRect__;
+    roiRect__&=imageRect__;
     if (roiRect__.isEmpty()==false) {
-        auto cvMat__ = qImage2CVmat( image__ );
+        auto cvMat__=qImage2CVmat(image__);
         cv::Mat ans__;
-        ans__ = cvMat__.first(cv::Rect2f(
+        ans__=cvMat__.first(cv::Rect2f(
             roiRect__.x(),
             roiRect__.y(),
             roiRect__.width(),
@@ -218,7 +217,7 @@ void MainWindow::save() {
 
 void MainWindow::open() {
 
-    const QString files_= QFileDialog::getOpenFileName(
+    const QString files_=QFileDialog::getOpenFileName(
         nullptr,
         u8R"(选择图片)"_qs,
         ""/*dir*/,
@@ -236,14 +235,12 @@ void MainWindow::open() {
 
 
 MainWindow::MainWindow(QWidget *parent)
-    : P(parent)
-{
+    : P(parent) {
     this->resize(768,512);
 
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
 
 }
 

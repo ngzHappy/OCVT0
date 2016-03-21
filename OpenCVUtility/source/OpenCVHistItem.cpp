@@ -13,27 +13,27 @@ OpenCVHistItem::~OpenCVHistItem() {
 
 }
 
-void OpenCVHistItem::renderTo(QImage & i){
-    if ( chart_ ) {
+void OpenCVHistItem::renderTo(QImage & i) {
+    if (chart_) {
 
-        QSizeF csize_ = chart_->size();
-        i=QImage( 
+        QSizeF csize_=chart_->size();
+        i=QImage(
             qRound(csize_.width()+0.51),qRound(csize_.height()+0.51),
             QImage::Format_RGBA8888
             );
         i.fill(QColor(0,0,0,0));
-        
-        QGraphicsScene * sc_ = chart_->scene();
+
+        QGraphicsScene * sc_=chart_->scene();
         if (sc_==nullptr) { return; }
         sc_->setActiveWindow(this);
 
         QPointF spos_=chart_->mapToScene(chart_->rect().topLeft());
 
-        QPainter painter( &i );
+        QPainter painter(&i);
         sc_->render(
             &painter,
             QRectF(0,0,i.width(),i.height()),
-            QRectF(  spos_.x(),spos_.y(), i.width(),i.height() )
+            QRectF(spos_.x(),spos_.y(),i.width(),i.height())
             );
 
     }

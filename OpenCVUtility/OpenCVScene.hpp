@@ -15,7 +15,7 @@ private:
 public:
     explicit OpenCVScene(QObject * /**/=nullptr);
     ~OpenCVScene();
-    void setImageAlg( const OpenCVImageItem::AlgFunctionType &);
+    void setImageAlg(const OpenCVImageItem::AlgFunctionType &);
     OpenCVImageItem * insertImage(QImage);
     OpenCVHistItem * insertHist(QList<qreal>);
     template<typename B,typename E>
@@ -26,9 +26,9 @@ protected:
 };
 
 template<typename B,typename E>
-OpenCVHistItem * OpenCVScene::insertHist(B b,E e){
+OpenCVHistItem * OpenCVScene::insertHist(B b,E e) {
     QList<qreal> ans_;
-    for(;b!=e;++b){ans_.push_back(*b);}
+    for (; b!=e; ++b) { ans_.push_back(*b); }
     return insertHist(std::move(ans_));
 }
 

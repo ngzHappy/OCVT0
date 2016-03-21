@@ -19,7 +19,7 @@ public:
 
     static const QIcon & getTitleBarIcon() {
         static const QIcon ans_=[]() {
-            enum {R_=128, R_0_=R_/4,R_1_=2*R_/4,R_2_=3*R_/4};
+            enum { R_=128,R_0_=R_/4,R_1_=2*R_/4,R_2_=3*R_/4 };
             QImage image_(R_,R_,QImage::Format_RGBA8888);
             image_.fill(QColor(0,0,0,0));
             QPainter painter(&image_);
@@ -45,11 +45,11 @@ public:
                 p3.addEllipse((R_-R_0_)/2,(R_-R_0_)/2,R_0_,R_0_);
             }
 
-            painter.setBrush(QColor(0,0,255 ,160));
+            painter.setBrush(QColor(0,0,255,160));
             painter.drawPath(p3);
-            painter.setBrush(QColor(0,255,0 ,160));
+            painter.setBrush(QColor(0,255,0,160));
             painter.drawPath(p2);
-            painter.setBrush(QColor(255,0,0 ,160));
+            painter.setBrush(QColor(255,0,0,160));
             painter.drawPath(p1);
 
             return QIcon(QPixmap::fromImage(std::move(image_)));
@@ -132,6 +132,6 @@ void OpenCVItem::_onYChanged() {
 
 void OpenCVItem::mousePressEvent(
         QGraphicsSceneMouseEvent *event
-        ){
+        ) {
     return P::mousePressEvent(event);
 }

@@ -21,13 +21,13 @@ void OpenCVScene::contextMenuEvent(
     QGraphicsSceneContextMenuEvent *contextMenuEvent
     ) {
 
-    const QPoint pos_ = contextMenuEvent->screenPos();
-    QGraphicsItem * item_ = this->itemAt( contextMenuEvent->scenePos(),QTransform() );
-    OpenCVImageItem * imageItem_= dynamic_cast< OpenCVImageItem * >(item_);
-   
+    const QPoint pos_=contextMenuEvent->screenPos();
+    QGraphicsItem * item_=this->itemAt(contextMenuEvent->scenePos(),QTransform());
+    OpenCVImageItem * imageItem_=dynamic_cast<OpenCVImageItem *>(item_);
+
     if (imageItem_) {
         QMenu menu_;
-        QAction * action_ = menu_.addAction( trUtf8(u8R"(保存)"));
+        QAction * action_=menu_.addAction(trUtf8(u8R"(保存)"));
         connect(action_,&QAction::triggered,
             imageItem_,[imageItem_](bool) {imageItem_->saveImage(); });
         menu_.exec(pos_);
@@ -36,8 +36,8 @@ void OpenCVScene::contextMenuEvent(
 }
 
 void OpenCVScene::setImageAlg(const OpenCVImageItem::AlgFunctionType & a) {
-    QList<QGraphicsItem *> allitems_ = this->items();
-    for (QGraphicsItem * i:allitems_ ) {
+    QList<QGraphicsItem *> allitems_=this->items();
+    for (QGraphicsItem * i:allitems_) {
         OpenCVImageItem * image_item_=dynamic_cast<OpenCVImageItem *>(i);
         if (image_item_) { image_item_->setAlgFunction(a); }
     }

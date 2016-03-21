@@ -27,7 +27,7 @@ static inline void __construct() {
 }
 
 /*在QApplication构造时运行*/
-Q_COREAPP_STARTUP_FUNCTION( __construct )
+Q_COREAPP_STARTUP_FUNCTION(__construct)
 
 
 
