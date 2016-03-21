@@ -45,3 +45,4 @@ DISTFILES += $$PWD/../Images/000003.jpg
 DISTFILES += $$PWD/../Images/000004.png
 DISTFILES += $$PWD/../Images/000005.png
 DISTFILES += $$PWD/../Images/000006.jpg
+DISTFILES += $$PWD/../Images/000007.jpg
