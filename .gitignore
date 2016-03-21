@@ -6,4 +6,4 @@
 *.lib
 *.ilk
 *.exp
-binlib/msvc/bind/core_mat_saveload_test.xml
+binlib/*
