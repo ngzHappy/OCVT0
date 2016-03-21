@@ -16,7 +16,7 @@ SOURCES += $$PWD/MainWindow.cpp
 
 HEADERS += $$PWD/MainWindow.hpp
 
-DEFINES += BUILD_PATH_=\\\"$$PWD\\\"
+DEFINES += BUILD_PATH_=\\\"$$clean_path($$PWD)\\\"
 
 include( $$PWD/../../OpenCVUtility/OpenCVUtility.pri )
 DESTDIR = $$OUTPWD

@@ -13,17 +13,17 @@ win32{
 win32-msvc*{
 
 CONFIG(debug,debug|release){
-OUTPWD=$$PWD/../binlib/msvc/bind
+OUTPWD=$$clean_path( $$PWD/../binlib/msvc/bind )
 }else{
-OUTPWD=$$PWD/../binlib/msvc/bin
+OUTPWD=$$clean_path( $$PWD/../binlib/msvc/bin )
 }
 
 }else{
 
 CONFIG(debug,debug|release){
-OUTPWD=$$PWD/../binlib/win32/bind
+OUTPWD=$$clean_path( $$PWD/../binlib/win32/bind )
 }else{
-OUTPWD=$$PWD/../binlib/win32/bin
+OUTPWD=$$clean_path( $$PWD/../binlib/win32/bin )
 }
 
 }
@@ -31,9 +31,11 @@ OUTPWD=$$PWD/../binlib/win32/bin
 }else{
 
 CONFIG(debug,debug|release){
-OUTPWD=$$PWD/../binlib/common/bind
+OUTPWD=$$clean_path( $$PWD/../binlib/common/bind )
 }else{
-OUTPWD=$$PWD/../binlib/common/bin
+OUTPWD=$$clean_path( $$PWD/../binlib/common/bin )
 }
 
 }
+
+

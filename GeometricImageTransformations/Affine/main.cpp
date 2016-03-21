@@ -16,7 +16,7 @@ inline static int maxLength(double dx,double dy) {
 static inline void run(MainWindow * window ) {
 
     QImage image0("images:000000");
-   
+
     const float width_image_=image0.width();
     const float height_image_=image0.height();
 
@@ -26,10 +26,10 @@ static inline void run(MainWindow * window ) {
     const float diff_height_image_=len_/2;
 
     std::vector< cv::Point2f > from_{ {0,4},{4,0},{0,0} };
-    std::vector< cv::Point2f > to_{ 
+    std::vector< cv::Point2f > to_{
         {2+diff_width_image_,diff_height_image_+2},
         {2+diff_width_image_,diff_height_image_-2},
-        {diff_width_image_,diff_height_image_} 
+        {diff_width_image_,diff_height_image_}
     };
 
     cv::Mat atmax_ = cv::getAffineTransform(from_,to_);
@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
     {
         QDir::addSearchPath("images",app.applicationDirPath()+"/Images");
         QDir::addSearchPath("images",BUILD_PATH_);
-        QDir::addSearchPath("images",BUILD_PATH_"/../../Images");
+        QDir::addSearchPath("images",QDir::cleanPath(BUILD_PATH_"/../../Images"));
     }
 
     MainWindow * window =  new MainWindow;

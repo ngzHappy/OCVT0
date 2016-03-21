@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
     {
         QDir::addSearchPath("images",app.applicationDirPath()+"/Images");
         QDir::addSearchPath("images",BUILD_PATH_);
-        QDir::addSearchPath("images",BUILD_PATH_"/../../Images");
+        QDir::addSearchPath("images",QDir::cleanPath(BUILD_PATH_"/../../Images"));
     }
 
     MainWindow * window =  new MainWindow;

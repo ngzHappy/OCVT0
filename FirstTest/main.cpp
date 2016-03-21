@@ -23,8 +23,12 @@ static inline void run(MainWindow * window) {
     window->insertImage(QImage("images:000002"))
         ->setWindowTitle(u8"原图"_qs);
 
-    std::ofstream ofs("gray.txt");
+    const std::string fileName=
+        (qApp->applicationDirPath()+"/gray.txt").toLocal8Bit().toStdString();
+    std::cout<<"fileName: "<<fileName<<std::endl;
+    std::ofstream ofs(fileName);
     ofs<<ans0<<std::endl;
+
 }
 
 int main(int argc,char *argv[]) {
@@ -34,7 +38,7 @@ int main(int argc,char *argv[]) {
     {
         QDir::addSearchPath("images",app.applicationDirPath()+"/Images");
         QDir::addSearchPath("images",BUILD_PATH_);
-        QDir::addSearchPath("images",BUILD_PATH_"/../Images");
+        QDir::addSearchPath("images",QDir::cleanPath(BUILD_PATH_"/../Images"));
     }
 
     MainWindow * window=new MainWindow;
