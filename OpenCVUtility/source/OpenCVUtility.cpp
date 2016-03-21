@@ -15,7 +15,9 @@ void OpenCVUtility::construct() {
 namespace {
 static inline void __construct() {
     {   /*强制加载图片插件,加强运行期体验*/
-        QImage * image_=new QImage(".null.png");
+        QImage * image_=new QImage(":/images/images/000000.png");
+        auto width_=image_->width(); (void)width_;
+        auto height_=image_->height(); (void)height_;
         delete image_;
     }
     {
