@@ -24,7 +24,7 @@ static inline void run(MainWindow * window) {
         ->setWindowTitle(u8"原图"_qs);
 
     const std::string fileName=
-        (qApp->applicationDirPath()+"/gray.txt").toLocal8Bit().toStdString();
+        QDir::cleanPath(qApp->applicationDirPath()+"/gray.txt").toLocal8Bit().toStdString();
     std::cout<<"fileName: "<<fileName<<std::endl;
     std::ofstream ofs(fileName);
     ofs<<ans0<<std::endl;
