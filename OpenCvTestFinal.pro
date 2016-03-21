@@ -27,6 +27,8 @@ CoreMatPaint.file = $$PWD/Core/Paint/Paint.pro
 CoreMatROI.file = $$PWD/Core/MatROI/ImgROI.pro
 CoreRect.file = $$PWD/Core/Rect/Rect.pro
 
+FilterBox.file = $$PWD/Filter/BoxFilter/BoxFilter.pro
+FilterBlur.file = $$PWD/Filter/Blur/Blur.pro
 FilterBilateral.file = $$PWD/Filter/Bilateral/Bilateral.pro
 
 GeometricImageTransformationsPolar.file  = $$PWD/GeometricImageTransformations/Polar/Polar.pro
@@ -50,6 +52,7 @@ CoreMatXYZ.depends += OpenCVUtility
 CoreMatROI.depends += OpenCVUtility
 CoreMatPaint.depends += OpenCVUtility
 FilterBilateral.depends += OpenCVUtility
+FilterBlur.depends+=OpenCVUtility
 
 GeometricImageTransformationsPolar.depends+=OpenCVUtility
 GeometricImageTransformationsResize.depends+=OpenCVUtility
@@ -81,3 +84,5 @@ SUBDIRS += GeometricImageTransformationsPerspective
 SUBDIRS += GeometricImageTransformationsAffine
 SUBDIRS += GeometricImageTransformationsRemap
 SUBDIRS += FilterBilateral
+SUBDIRS += FilterBlur
+SUBDIRS += FilterBox
