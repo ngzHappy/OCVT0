@@ -13,7 +13,7 @@ static inline void run(MainWindow * window ) {
     QImage image0("images:000003");
 
     auto mat=qImage2CVmat(image0);
-    auto mat1=qImage2CVmat(image0);
+    auto mat1=qImage2CVmat(image0.copy());
 
     cv::boxFilter(mat.first,mat.first,-1,{ 2,2 },{-1,-1},false);
     cv::blur(mat1.first,mat1.first,{3,3});

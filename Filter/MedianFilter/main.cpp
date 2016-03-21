@@ -13,7 +13,7 @@ static inline void run(MainWindow * window ) {
     QImage image0("images:000003");
 
     auto mat=qImage2CVmat(image0);
-    auto mat1=qImage2CVmat(image0);
+    auto mat1=qImage2CVmat(image0.copy());
 
     cv::medianBlur(mat.first,mat.first,3);
     cv::blur(mat1.first,mat1.first,{3,3});
