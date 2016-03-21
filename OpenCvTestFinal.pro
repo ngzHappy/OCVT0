@@ -52,7 +52,8 @@ CoreMatXYZ.depends += OpenCVUtility
 CoreMatROI.depends += OpenCVUtility
 CoreMatPaint.depends += OpenCVUtility
 FilterBilateral.depends += OpenCVUtility
-FilterBlur.depends+=OpenCVUtility
+FilterBlur.depends += OpenCVUtility
+FilterBox.depends += OpenCVUtility
 
 GeometricImageTransformationsPolar.depends+=OpenCVUtility
 GeometricImageTransformationsResize.depends+=OpenCVUtility
