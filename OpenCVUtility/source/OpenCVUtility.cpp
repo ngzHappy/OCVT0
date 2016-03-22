@@ -81,7 +81,7 @@ public:
             assert( u->handle == &deleteAny );
             deleteAny(reinterpret_cast<QVariant *>(u->userdata));
 #if defined(_DEBUG)
-            qDebug()<<"destory qimage "<<__func__;
+            //qDebug()<<"destory qimage "<<__func__;
 #endif
         }
 
