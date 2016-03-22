@@ -5,6 +5,10 @@ QT += widgets
 QT += gui
 QT += charts
 
+QT += core_private
+QT += widgets_private
+QT += gui_private
+
 CONFIG(debug,debug|release){
 TARGET = OpenCVUtilityd
 }else{

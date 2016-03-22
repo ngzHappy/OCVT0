@@ -2,6 +2,7 @@
 #include <QtWidgets/qapplication.h>
 #include <QtGui/qimage.h>
 #include <QtCore/qtimer.h>
+#include <private/qimage_p.h>
 #include <cstdlib>
 #include <ctime>
 #include <cassert>
@@ -23,11 +24,11 @@ class StdMatAllocator : public cv::MatAllocator
 {
 public:
     cv::UMatData* allocate(
-        int dims, 
-        const int* sizes, 
+        int dims,
+        const int* sizes,
         int type,
-        void* data0, 
-        size_t* step, 
+        void* data0,
+        size_t* step,
         int /*flags*/,
         cv::UMatUsageFlags /*usageFlags*/) const{
 
@@ -41,7 +42,7 @@ public:
                     total = step[i];
                 }
                 else {
-                    step[i]=total; 
+                    step[i]=total;
                 }
             }
             total *= sizes[i];
@@ -57,8 +58,8 @@ public:
     }
 
     bool allocate(
-        cv::UMatData* u, 
-        int /*accessFlags*/, 
+        cv::UMatData* u,
+        int /*accessFlags*/,
         cv::UMatUsageFlags /*usageFlags*/) const{
         if(!u) return false;
         return true;
@@ -110,7 +111,11 @@ static inline void __construct() {
         if (stdMalloc==nullptr) {
             stdMalloc=new StdMatAllocator;
             cv::Mat::setDefaultAllocator(stdMalloc);
-            qAddPostRoutine([]() {delete stdMalloc; stdMalloc=0; });
+            qAddPostRoutine([]() {
+                cv::Mat::setDefaultAllocator(nullptr);
+                delete stdMalloc;
+                stdMalloc=0;
+            });
         }
     }
     OpenCVUtility::construct();
@@ -130,7 +135,7 @@ cv::Mat OpenCVUtility::read(QImage && image_) {
     if (image_.width()<=0) { return cv::Mat(); }
     if (image_.height()<=0) { return cv::Mat(); }
     image_.detach();
- 
+
     QImage::Format format_ = image_.format();
     switch (format_) {
         case QImage::Format_Invalid:break;
@@ -210,7 +215,7 @@ cv::Mat OpenCVUtility::read(QImage && image_) {
             ->allocate(0,nullptr,0,image_.bits(),nullptr,0,cv::USAGE_DEFAULT);
         assert( xmat_.u->userdata == nullptr );
         assert( xmat_.u->handle == nullptr );
-        xmat_.u->handle=OpenCVUtility::getHandle();
+        xmat_.u->handle = reinterpret_cast<void *>( OpenCVUtility::getHandle() );
         xmat_.u->userdata=new QVariant(QImage(std::move(image_)));
         xmat_.u->refcount=1;
         return std::move(xmat_);
@@ -228,7 +233,7 @@ cv::Mat OpenCVUtility::read(QImage && image_) {
             ->allocate(0,nullptr,0,image_.bits(),nullptr,0,cv::USAGE_DEFAULT);
         assert( xmat_.u->userdata == nullptr );
         assert( xmat_.u->handle == nullptr );
-        xmat_.u->handle=OpenCVUtility::getHandle();
+        xmat_.u->handle= reinterpret_cast<void *>(OpenCVUtility::getHandle());
         xmat_.u->userdata=new QVariant(QImage(std::move(image_)));
         xmat_.u->refcount=1;
         return std::move(xmat_);
@@ -247,7 +252,7 @@ cv::Mat OpenCVUtility::read(QImage && image_) {
                 ->allocate(0,nullptr,0,image_.bits(),nullptr,0,cv::USAGE_DEFAULT);
             assert( xmat_.u->userdata == nullptr );
             assert( xmat_.u->handle == nullptr );
-            xmat_.u->handle=OpenCVUtility::getHandle();
+            xmat_.u->handle= reinterpret_cast<void *>(OpenCVUtility::getHandle());
             xmat_.u->userdata=new QVariant(QImage(std::move(image_)));
             xmat_.u->refcount=1;
             return std::move(xmat_);
@@ -257,6 +262,28 @@ cv::Mat OpenCVUtility::read(QImage && image_) {
         }
     }
 
+}
+
+namespace  {
+void handle_qimage_(void * v){
+    delete reinterpret_cast<cv::Mat *>( v );
+}
+}
+
+OpenCVUtility::HandleQImage OpenCVUtility::getHandleQImage(){
+    return &handle_qimage_;
+}
+
+cv::Mat OpenCVUtility::getInnerOpenCVMat(const QImage & image_){
+    QImage::DataPtr data_ = const_cast<QImage &>(image_).data_ptr();
+    if(data_){
+        if( data_->cleanupInfo ){
+            if( data_->cleanupFunction == getHandleQImage() ){
+                return *( reinterpret_cast<cv::Mat *>( data_->cleanupInfo ) );
+            }
+        }
+    }
+    return cv::Mat();
 }
 
 QImage OpenCVUtility::getInnerQImage(const cv::Mat & v) {

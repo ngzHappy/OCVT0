@@ -26,10 +26,13 @@ protected:
 public:
     static void construct();
     typedef void(* Handle)(QVariant *  );
+    typedef void(* HandleQImage)(void *);
     static Handle getHandle();
+    static HandleQImage getHandleQImage();
     static cv::Mat read(const QString &);
     static cv::Mat read(QImage &&);
     static QImage getInnerQImage(const cv::Mat & );
+    static cv::Mat getInnerOpenCVMat(const QImage & );
 };
 
 inline QString operator""_qs(const char * utf8data__,std::size_t l__) {
