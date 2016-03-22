@@ -290,7 +290,7 @@ QImage OpenCVUtility::read(const cv::Mat & v){
     {
         const cv::Mat & tmp = v;
         if ( v.type() == CV_8UC1 ) {
-            if(tmp.cols>0  && tmp.rows>0 ) 
+            if(tmp.cols>0  && tmp.rows>0 )
                 return QImage(
                     tmp.data,
                     tmp.cols,tmp.rows,
@@ -298,6 +298,7 @@ QImage OpenCVUtility::read(const cv::Mat & v){
                     OpenCVUtility::getHandleQImage(),
                     new cv::Mat( tmp )
                     );
+            else return QImage();
         }
         else if(v.type() == CV_8UC3){
             if(tmp.cols>0  && tmp.rows>0 )
@@ -308,6 +309,7 @@ QImage OpenCVUtility::read(const cv::Mat & v){
                     OpenCVUtility::getHandleQImage(),
                     new cv::Mat( tmp )
                     );
+            else return QImage();
         }
         else if ( v.type() == CV_8UC4 ) {
             if(tmp.cols>0  && tmp.rows>0 )
@@ -318,6 +320,7 @@ QImage OpenCVUtility::read(const cv::Mat & v){
                     OpenCVUtility::getHandleQImage(),
                     new cv::Mat( tmp )
                     );
+            else return QImage();
         }
     }
 
@@ -372,7 +375,7 @@ cv::Mat OpenCVUtility::tryRead(QImage && v) {
     if (v.width()<=0) { return cv::Mat(); }
     if (v.height()<=0) { return cv::Mat(); }
     cv::Mat ans_=getInnerOpenCVMat( v );
-    if (ans_.rows<=0 || ans_.cols<=0) {  
+    if (ans_.rows<=0 || ans_.cols<=0) {
         return read( std::move(v) );
     }
     return std::move(ans_);
