@@ -286,6 +286,78 @@ cv::Mat OpenCVUtility::getInnerOpenCVMat(const QImage & image_){
     return cv::Mat();
 }
 
+QImage OpenCVUtility::read(const cv::Mat & v){
+    {
+        const cv::Mat & tmp = v;
+        if ( v.type() == CV_8UC1 ) {
+            if(tmp.cols>0  && tmp.rows>0 ) 
+                return QImage(
+                    tmp.data,
+                    tmp.cols,tmp.rows,
+                    QImage::Format_Grayscale8,
+                    OpenCVUtility::getHandleQImage(),
+                    new cv::Mat( tmp )
+                    );
+        }
+        else if(v.type() == CV_8UC3){
+            if(tmp.cols>0  && tmp.rows>0 )
+                return QImage(
+                    tmp.data,
+                    tmp.cols,tmp.rows,
+                    QImage::Format_RGB888,
+                    OpenCVUtility::getHandleQImage(),
+                    new cv::Mat( tmp )
+                    );
+        }
+        else if ( v.type() == CV_8UC4 ) {
+            if(tmp.cols>0  && tmp.rows>0 )
+                return QImage(
+                    tmp.data,
+                    tmp.cols,tmp.rows,
+                    QImage::Format_RGBA8888,
+                    OpenCVUtility::getHandleQImage(),
+                    new cv::Mat( tmp )
+                    );
+        }
+    }
+
+    cv::Mat tmp;
+    const auto channels_ = v.channels();
+    if( channels_ == 1 ){
+        v.convertTo( tmp,CV_8UC1 );
+        if(tmp.cols>0  && tmp.rows>0 ){
+            return QImage(
+                        tmp.data,
+                        tmp.cols,tmp.rows,
+                        QImage::Format_Grayscale8,
+                        OpenCVUtility::getHandleQImage(),
+                        new cv::Mat( tmp )
+                        );
+        }
+    }else if( channels_ == 3 ){
+        v.convertTo( tmp,CV_8UC3 );
+        if(tmp.cols>0  && tmp.rows>0 )
+        return QImage(
+                    tmp.data,
+                    tmp.cols,tmp.rows,
+                    QImage::Format_RGB888,
+                    OpenCVUtility::getHandleQImage(),
+                    new cv::Mat( tmp )
+                    );
+    }else if( channels_ == 4 ){
+        v.convertTo( tmp,CV_8UC4 );
+        if(tmp.cols>0  && tmp.rows>0 )
+        return QImage(
+                    tmp.data,
+                    tmp.cols,tmp.rows,
+                    QImage::Format_RGBA8888,
+                    OpenCVUtility::getHandleQImage(),
+                    new cv::Mat( tmp )
+                    );
+    }
+    return QImage();
+}
+
 QImage OpenCVUtility::getInnerQImage(const cv::Mat & v) {
     if (v.u) {
         if (v.u->userdata) {
@@ -294,6 +366,26 @@ QImage OpenCVUtility::getInnerQImage(const cv::Mat & v) {
         }
     }
     return QImage();
+}
+
+cv::Mat OpenCVUtility::tryRead(QImage && v) {
+    if (v.width()<=0) { return cv::Mat(); }
+    if (v.height()<=0) { return cv::Mat(); }
+    cv::Mat ans_=getInnerOpenCVMat( v );
+    if (ans_.rows<=0 || ans_.cols<=0) {  
+        return read( std::move(v) );
+    }
+    return std::move(ans_);
+}
+
+QImage OpenCVUtility::tryRead(const cv::Mat & v) {
+    if (v.rows<=0) { return QImage(); }
+    if (v.cols<=0) { return QImage(); }
+    QImage ans_=getInnerQImage( v );
+    if (ans_.width()<=0||ans_.height()<=0) {
+        return read( v );
+    }
+    return std::move(ans_);
 }
 
 /*在QApplication构造时运行*/

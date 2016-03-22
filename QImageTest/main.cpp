@@ -35,12 +35,13 @@ inline QString searchImageFileName(const QString & fileName_) {
 static inline void run(MainWindow * window) {
        
     QImage image0("images:000000");
-    window->insertImage(image0);
+    window->insertImage(image0)->setWindowTitle(u8"原图"_qs);
     {
         QImage imageBlur=image0;
-        cv::Mat ans_=OpenCVUtility::read(std::move(imageBlur));
+        cv::Mat ans_=OpenCVUtility::tryRead(std::move(imageBlur));
         cv::blur(ans_,ans_,{ 3,3 });
-        window->insertImage(OpenCVUtility::getInnerQImage(ans_));
+        window->insertImage(OpenCVUtility::tryRead(ans_))
+            ->setWindowTitle(u8"blur"_qs);
     }
 }
 

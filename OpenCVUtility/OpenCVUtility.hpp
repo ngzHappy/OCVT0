@@ -31,6 +31,9 @@ public:
     static HandleQImage getHandleQImage();
     static cv::Mat read(const QString &);
     static cv::Mat read(QImage &&);
+    static QImage read(const cv::Mat &);
+    static cv::Mat tryRead(QImage &&);
+    static QImage tryRead(const cv::Mat &);
     static QImage getInnerQImage(const cv::Mat & );
     static cv::Mat getInnerOpenCVMat(const QImage & );
 };
