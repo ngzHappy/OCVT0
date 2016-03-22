@@ -23,7 +23,9 @@ SOURCES += $$PWD/source/OpenCVWindow.cpp
 SOURCES += $$PWD/source/OpenCVItem.cpp
 SOURCES += $$PWD/source/OpenCVScene.cpp
 SOURCES += $$PWD/source/OpenCVMatQImage.cpp
+SOURCES += $$PWD/source/OpenCVQImage.cpp
 
+HEADERS += $$PWD/OpenCVQImage.hpp
 HEADERS += $$PWD/OpenCVUtility.hpp
 HEADERS += $$PWD/OpenCVMatQImage.hpp
 HEADERS += $$PWD/OpenCVHistItem.hpp

@@ -38,5 +38,6 @@ inline QString operator""_qs(const char * utf8data__,std::size_t l__) {
 #include "OpenCVHistItem.hpp"
 #include "ReadOnly.hpp"
 #include "OpenCVMatQImage.hpp"
+#include "OpenCVQImage.hpp"
 
 #endif // OPENCVUTILITY_HPP

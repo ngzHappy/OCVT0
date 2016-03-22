@@ -8,17 +8,18 @@
 
 static inline void run(MainWindow * window) {
 
-    window->insertImage(QImage("images:000000"))->setWindowTitle("0");
     window->insertImage(QImage("images:000001"))->setWindowTitle("1");
+    window->insertImage(OpenCVQImage("images:000000"))->setWindowTitle("0");
     auto * item_=window->insertHist({ 1,2,3 });
     item_->setWindowTitle("2");
 
     std::pair<cv::Mat,QImage> matImage=qImage2CVmat(QImage("images:000002"));
-    cv::Mat ans0,ans1;
-    cv::decolor(matImage.first,ans0,ans1);
+    cv::Mat ans0;
+    OpenCVQImage ans1;
+    cv::decolor(matImage.first,ans0,ans1.toOpenCVMat());
     window->insertImage(cvMat2QImage(ans0).first.copy())
         ->setWindowTitle(u8"灰度图"_qs);
-    window->insertImage(cvMat2QImage(ans1).first.copy())
+    window->insertImage(ans1.tryCopyQImage())
         ->setWindowTitle(u8"增强彩色图"_qs);
     window->insertImage(QImage("images:000002"))
         ->setWindowTitle(u8"原图"_qs);
