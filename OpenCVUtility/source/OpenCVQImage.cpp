@@ -34,15 +34,19 @@ void OpenCVQImage::_construct(cv::Mat && v) {
 void OpenCVQImage::_copy() {}
 void OpenCVQImage::_copy(const QImage & v) {
     data_.image_.value=v;
+    data_.image_.mat = Mat();
 }
 void OpenCVQImage::_copy(QImage && v) {
     data_.image_.value=std::move(v);
+    data_.image_.mat = Mat();
 }
 void OpenCVQImage::_copy(const cv::Mat & v) {
     data_.mat_.value=v;
+    data_.mat_.image = QImage();
 }
 void OpenCVQImage::_copy(cv::Mat && v) {
     data_.mat_.value=std::move(v);
+    data_.mat_.image = QImage();
 }
 
 void OpenCVQImage::_destruct() {
