@@ -1,4 +1,10 @@
 
+CONFIG(debug,debug|release){
+
+}else{
+DEFINES *= NDEBUG
+}
+
 INCLUDEPATH += $$PWD
 include( $$PWD/opencv3.pri )
 

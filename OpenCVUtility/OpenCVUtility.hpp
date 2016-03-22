@@ -25,6 +25,11 @@ protected:
     virtual ~OpenCVUtility();
 public:
     static void construct();
+    typedef void(* Handle)(QVariant *  );
+    static Handle getHandle();
+    static cv::Mat read(const QString &);
+    static cv::Mat read(QImage &&);
+    static QImage getInnerQImage(const cv::Mat & );
 };
 
 inline QString operator""_qs(const char * utf8data__,std::size_t l__) {
