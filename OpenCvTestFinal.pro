@@ -12,6 +12,7 @@ TEMPLATE = subdirs
 
 OpenCVUtility.file = $$PWD/OpenCVUtility/OpenCVUtility.pro
 FirstTest.file = $$PWD/FirstTest/FirstTest.pro
+QImageTest.file = $$PWD/QImageTest/QImageTest.pro
 CoreMat.file = $$PWD/Core/Mat/Mat.pro
 CoreMatx.file = $$PWD/Core/Matx/Matx.pro
 CoreVec.file = $$PWD/Core/Vec/Vec.pro
@@ -64,8 +65,10 @@ GeometricImageTransformationsAffine.depends+=OpenCVUtility
 GeometricImageTransformationsPerspective.depends+=OpenCVUtility
 
 FirstTest.depends += OpenCVUtility
+QImageTest.depends += OpenCVUtility
 
 SUBDIRS += OpenCVUtility
+SUBDIRS += QImageTest
 SUBDIRS += FirstTest
 SUBDIRS += CoreMatROI
 SUBDIRS += CoreMat

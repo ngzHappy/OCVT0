@@ -259,7 +259,57 @@ QImage & OpenCVQImage::__to_qimage() {
                     data__.value.step,
                     QImage::Format::Format_Grayscale8);
             }break;
-            default: throw (std::string(__func__)+" "+__FILE__+" type ????"); break;
+        default: {
+            if( data__.value.channels() == 3 ){
+                QImage image__( 
+                    data__.value.cols,
+                    data__.value.rows,
+                    QImage::Format_RGB888 );
+                cv::Mat ans__(
+                    image__.height(),
+                    image__.width(),
+                    CV_8UC3,
+                    const_cast<uchar *>(image__.constBits()),
+                    image__.bytesPerLine()
+                    );
+                data__.value.convertTo(ans__,CV_8UC3);
+                data__.image=std::move(image__);
+                return data__.image;
+            }
+            else if (data__.value.channels()==4) {
+                QImage image__( 
+                    data__.value.cols,
+                    data__.value.rows,
+                    QImage::Format_RGBA8888 );
+                cv::Mat ans__(
+                    image__.height(),
+                    image__.width(),
+                    CV_8UC4,
+                    const_cast<uchar *>(image__.constBits()),
+                    image__.bytesPerLine()
+                    );
+                data__.value.convertTo(ans__,CV_8UC4);
+                data__.image=std::move(image__);
+                return data__.image;
+            }
+            else if ( data__.value.channels()==1 ) {
+                QImage image__( 
+                    data__.value.cols,
+                    data__.value.rows,
+                    QImage::Format_Grayscale8 );
+                cv::Mat ans__(
+                    image__.height(),
+                    image__.width(),
+                    CV_8UC1,
+                    const_cast<uchar *>(image__.constBits()),
+                    image__.bytesPerLine()
+                    );
+                data__.value.convertTo(ans__,CV_8UC1);
+                data__.image=std::move(image__);
+                return data__.image;
+            }
+            throw (std::string(__func__)+" "+__FILE__+" type ????");
+        } break;
         }
     }
     return data__.image;
