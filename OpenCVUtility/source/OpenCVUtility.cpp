@@ -3,6 +3,8 @@
 #include <QtGui/qimage.h>
 #include <QtCore/qtimer.h>
 #include <private/qimage_p.h>
+#include <QtGui/qimagereader.h>
+ 
 #include <cstdlib>
 #include <ctime>
 #include <cassert>
@@ -78,10 +80,10 @@ public:
         }
 
         if (u->userdata) {
-            assert( u->handle == &deleteAny );
+            //assert( u->handle == &deleteAny );
             deleteAny(reinterpret_cast<QVariant *>(u->userdata));
 #if defined(_DEBUG)
-            //qDebug()<<"destory qimage "<<__func__;
+            qDebug()<<"destory qimage "<<__func__;
 #endif
         }
 
@@ -91,8 +93,22 @@ public:
 
 }
 
-namespace {
+namespace{
 static cv::MatAllocator * stdMalloc=nullptr;
+}
+
+cv::MatAllocator * OpenCVUtility::getReaderAllocator() {
+    if (stdMalloc) { return stdMalloc; }
+    stdMalloc = new StdMatAllocator;
+    qAddPostRoutine([]() {
+        delete stdMalloc;
+        stdMalloc=0;
+    });
+    return stdMalloc;
+}
+
+namespace {
+
 static inline void __construct() {
     {   /*强制加载图片插件,加强运行期体验*/
         QImage * image_=new QImage(":/i_m_a_g_e_s_/images/000000.png");
@@ -106,18 +122,6 @@ static inline void __construct() {
         /*设置随机种子*/
         std::srand(int(std::time(nullptr)));
     }
-    {
-        /*设置OpenCV内存分配策略*/
-        if (stdMalloc==nullptr) {
-            stdMalloc=new StdMatAllocator;
-            cv::Mat::setDefaultAllocator(stdMalloc);
-            qAddPostRoutine([]() {
-                cv::Mat::setDefaultAllocator(nullptr);
-                delete stdMalloc;
-                stdMalloc=0;
-            });
-        }
-    }
     OpenCVUtility::construct();
 }
 }
@@ -126,80 +130,91 @@ OpenCVUtility::Handle OpenCVUtility::getHandle() {
     return &deleteAny;
 }
 
-cv::Mat OpenCVUtility::read(const QString & string_) {
-    QImage image_(string_);
-    return read( std::move(image_) );
-}
-
-cv::Mat OpenCVUtility::read(QImage && image_) {
-    if (image_.width()<=0) { return cv::Mat(); }
-    if (image_.height()<=0) { return cv::Mat(); }
-    image_.detach();
-
-    QImage::Format format_ = image_.format();
+namespace {
+QImage::Format format_change_(QImage::Format format_) {
+    QImage::Format & image_=format_;
     switch (format_) {
         case QImage::Format_Invalid:break;
         case QImage::Format_Mono:break;
         case QImage::Format_MonoLSB:break;
         case QImage::Format_Indexed8:break;
         case QImage::Format_RGB32: {
-            image_=image_.convertToFormat(QImage::Format_RGB888);
+            image_= QImage::Format_RGB888 ;
         }break;
         case QImage::Format_ARGB32: {
-            image_=image_.convertToFormat(QImage::Format_RGBA8888);
+            image_= QImage::Format_RGBA8888 ;
         }break;
         case QImage::Format_ARGB32_Premultiplied:{
-            image_=image_.convertToFormat(QImage::Format_RGBA8888);
+            image_= QImage::Format_RGBA8888 ;
         }break;
         case QImage::Format_RGB16:{
-            image_=image_.convertToFormat(QImage::Format_RGB888);
+            image_= QImage::Format_RGB888 ;
         }break;
         case QImage::Format_ARGB8565_Premultiplied:{
-            image_=image_.convertToFormat(QImage::Format_RGBA8888);
+            image_= QImage::Format_RGBA8888 ;
         }break;
         case QImage::Format_RGB666:{
-            image_=image_.convertToFormat(QImage::Format_RGB888);
+            image_= QImage::Format_RGB888 ;
         }break;
         case QImage::Format_ARGB6666_Premultiplied: {
-            image_=image_.convertToFormat(QImage::Format_RGBA8888);
+            image_= QImage::Format_RGBA8888 ;
         }break;
         case QImage::Format_RGB555: {
-            image_=image_.convertToFormat(QImage::Format_RGB888);
+            image_= QImage::Format_RGB888 ;
         }break;
         case QImage::Format_ARGB8555_Premultiplied: {
-            image_=image_.convertToFormat(QImage::Format_RGBA8888);
+            image_= QImage::Format_RGBA8888 ;
         }break;
         case QImage::Format_RGB888: break;
         case QImage::Format_RGB444: {
-            image_=image_.convertToFormat(QImage::Format_RGB888);
+            image_= QImage::Format_RGB888 ;
         }break;
         case QImage::Format_ARGB4444_Premultiplied: {
-            image_=image_.convertToFormat(QImage::Format_RGBA8888);
+            image_= QImage::Format_RGBA8888 ;
         }break;
         case QImage::Format_RGBX8888: {
-            image_=image_.convertToFormat(QImage::Format_RGB888);
+            image_= QImage::Format_RGB888 ;
         }break;
         case QImage::Format_RGBA8888: {}break;
         case QImage::Format_RGBA8888_Premultiplied: {
-            image_=image_.convertToFormat(QImage::Format_RGBA8888);
+            image_= QImage::Format_RGBA8888 ;
         }break;
         case QImage::Format_BGR30: {
-            image_=image_.convertToFormat(QImage::Format_RGB888);
+            image_= QImage::Format_RGB888 ;
         }break;
         case QImage::Format_A2BGR30_Premultiplied: {
-            image_=image_.convertToFormat(QImage::Format_RGBA8888);
+            image_= QImage::Format_RGBA8888 ;
         }break;
         case QImage::Format_RGB30: {
-            image_=image_.convertToFormat(QImage::Format_RGB888);
+            image_= QImage::Format_RGB888 ;
         }break;
         case QImage::Format_A2RGB30_Premultiplied: {
-            image_=image_.convertToFormat(QImage::Format_RGBA8888);
+            image_= QImage::Format_RGBA8888 ;
         }break;
         case QImage::Format_Alpha8:break;
         case QImage::Format_Grayscale8:break;
         case QImage::NImageFormats:break;
         default:break;
     }
+    return format_;
+}
+}
+
+cv::Mat OpenCVUtility::read(const QString & string_) {
+    QImage image_(string_) ;
+    return read( image_ );
+}
+
+cv::Mat OpenCVUtility::read(const QImage & image__) {
+    if (image__.width()<=0) { return cv::Mat(); }
+    if (image__.height()<=0) { return cv::Mat(); }
+
+    /*add a ref*/
+    QImage image_=image__;
+
+    QImage::Format format_ = image_.format();
+    format_=format_change_( format_ );
+    image_ = image_.convertToFormat(format_);
     format_ = image_.format();
 
     if ( format_ == QImage::Format_RGB888 ) {
@@ -211,11 +226,12 @@ cv::Mat OpenCVUtility::read(QImage && image_) {
             image_.bytesPerLine()
             );
         assert( xmat_.u == nullptr );
-        xmat_.u=cv::Mat::getDefaultAllocator()
+        xmat_.u=getReaderAllocator()
             ->allocate(0,nullptr,0,image_.bits(),nullptr,0,cv::USAGE_DEFAULT);
+        assert( xmat_.u->currAllocator == getReaderAllocator() );
         assert( xmat_.u->userdata == nullptr );
         assert( xmat_.u->handle == nullptr );
-        xmat_.u->handle = reinterpret_cast<void *>( OpenCVUtility::getHandle() );
+        //xmat_.u->handle = reinterpret_cast<void *>( OpenCVUtility::getHandle() );
         xmat_.u->userdata=new QVariant(QImage(std::move(image_)));
         xmat_.u->refcount=1;
         return std::move(xmat_);
@@ -229,11 +245,12 @@ cv::Mat OpenCVUtility::read(QImage && image_) {
             image_.bytesPerLine()
             );
         assert( xmat_.u == nullptr );
-        xmat_.u=cv::Mat::getDefaultAllocator()
+        xmat_.u=getReaderAllocator()
             ->allocate(0,nullptr,0,image_.bits(),nullptr,0,cv::USAGE_DEFAULT);
+        assert( xmat_.u->currAllocator == getReaderAllocator() );
         assert( xmat_.u->userdata == nullptr );
         assert( xmat_.u->handle == nullptr );
-        xmat_.u->handle= reinterpret_cast<void *>(OpenCVUtility::getHandle());
+        //xmat_.u->handle= reinterpret_cast<void *>(OpenCVUtility::getHandle());
         xmat_.u->userdata=new QVariant(QImage(std::move(image_)));
         xmat_.u->refcount=1;
         return std::move(xmat_);
@@ -248,11 +265,12 @@ cv::Mat OpenCVUtility::read(QImage && image_) {
                 image_.bytesPerLine()
                 );
             assert( xmat_.u == nullptr );
-            xmat_.u=cv::Mat::getDefaultAllocator()
+            xmat_.u=getReaderAllocator()
                 ->allocate(0,nullptr,0,image_.bits(),nullptr,0,cv::USAGE_DEFAULT);
+            assert( xmat_.u->currAllocator == getReaderAllocator() );
             assert( xmat_.u->userdata == nullptr );
             assert( xmat_.u->handle == nullptr );
-            xmat_.u->handle= reinterpret_cast<void *>(OpenCVUtility::getHandle());
+            //xmat_.u->handle= reinterpret_cast<void *>(OpenCVUtility::getHandle());
             xmat_.u->userdata=new QVariant(QImage(std::move(image_)));
             xmat_.u->refcount=1;
             return std::move(xmat_);
@@ -362,21 +380,21 @@ QImage OpenCVUtility::read(const cv::Mat & v){
 }
 
 QImage OpenCVUtility::getInnerQImage(const cv::Mat & v) {
-    if (v.u) {
+    if ( (v.u) && (  v.u->currAllocator == getReaderAllocator() ) ) {
         if (v.u->userdata) {
-            assert( v.u->handle == OpenCVUtility::getHandle() );
+            //assert( v.u->handle == OpenCVUtility::getHandle() );
             return reinterpret_cast<QVariant *>( v.u->userdata )->value<QImage>();
         }
     }
     return QImage();
 }
 
-cv::Mat OpenCVUtility::tryRead(QImage && v) {
+cv::Mat OpenCVUtility::tryRead(const QImage & v) {
     if (v.width()<=0) { return cv::Mat(); }
     if (v.height()<=0) { return cv::Mat(); }
     cv::Mat ans_=getInnerOpenCVMat( v );
     if (ans_.rows<=0 || ans_.cols<=0) {
-        return read( std::move(v) );
+        return read( v );
     }
     return std::move(ans_);
 }
